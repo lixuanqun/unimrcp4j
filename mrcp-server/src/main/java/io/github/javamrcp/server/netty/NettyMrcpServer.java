@@ -5,6 +5,7 @@ import io.github.javamrcp.codec.MrcpMessageDecoder;
 import io.github.javamrcp.codec.MrcpMessageEncoder;
 import io.github.javamrcp.server.MrcpServer;
 import io.github.javamrcp.server.MrcpServerConfig;
+import io.github.javamrcp.server.MrcpSessionRegistry;
 import io.github.javamrcp.sip.SipDatagramDecoder;
 import io.github.javamrcp.sip.SipDatagramEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -33,6 +34,7 @@ public final class NettyMrcpServer implements MrcpServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyMrcpServer.class);
 
     private final MrcpServerConfig config;
+    private final MrcpSessionRegistry sessionRegistry;
 
     private EventLoopGroup sipGroup;
     private EventLoopGroup bossGroup;
@@ -43,6 +45,7 @@ public final class NettyMrcpServer implements MrcpServer {
 
     public NettyMrcpServer(MrcpServerConfig config) {
         this.config = Objects.requireNonNull(config, "config");
+        this.sessionRegistry = new MrcpSessionRegistry(config.maxConcurrentSessions());
     }
 
     @Override
@@ -110,7 +113,7 @@ public final class NettyMrcpServer implements MrcpServer {
                         channel.pipeline()
                                 .addLast(new SipDatagramDecoder())
                                 .addLast(new SipDatagramEncoder())
-                                .addLast(new SipDatagramHandler());
+                                .addLast(new SipDatagramHandler(config, sessionRegistry));
                     }
                 });
 

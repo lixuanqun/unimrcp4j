@@ -3,6 +3,9 @@ package io.github.javamrcp.server.netty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import io.github.javamrcp.server.MrcpInviteHandler;
+import io.github.javamrcp.server.MrcpServerConfig;
+import io.github.javamrcp.server.MrcpSessionRegistry;
 import io.github.javamrcp.sip.SipDatagramDecoder;
 import io.github.javamrcp.sip.SipDatagramEncoder;
 import io.github.javamrcp.sip.SipMessage;
@@ -30,7 +33,8 @@ class SipDatagramHandlerTest {
         EmbeddedChannel channel = new EmbeddedChannel(
                 new SipDatagramDecoder(),
                 new SipDatagramEncoder(),
-                new SipDatagramHandler());
+                new SipDatagramHandler(new MrcpSessionRegistry(10),
+                        new MrcpInviteHandler(MrcpServerConfig.defaults(), new MrcpSessionRegistry(10))));
 
         channel.writeInbound(new DatagramPacket(
                 Unpooled.copiedBuffer(options, StandardCharsets.US_ASCII),

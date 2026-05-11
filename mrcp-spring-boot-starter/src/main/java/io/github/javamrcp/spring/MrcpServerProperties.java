@@ -10,10 +10,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mrcp.server")
 public class MrcpServerProperties {
     private boolean enabled = true;
+    private String advertisedHost = "127.0.0.1";
     private String sipHost = "0.0.0.0";
     private int sipPort = 8060;
     private String mrcpHost = "0.0.0.0";
     private int mrcpPort = 1544;
+    private int rtpPort = 4000;
     private int maxConcurrentSessions = 1_000;
     private Duration shutdownQuietPeriod = Duration.ofMillis(100);
     private Duration shutdownTimeout = Duration.ofSeconds(5);
@@ -24,6 +26,14 @@ public class MrcpServerProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getAdvertisedHost() {
+        return advertisedHost;
+    }
+
+    public void setAdvertisedHost(String advertisedHost) {
+        this.advertisedHost = advertisedHost;
     }
 
     public String getSipHost() {
@@ -58,6 +68,14 @@ public class MrcpServerProperties {
         this.mrcpPort = mrcpPort;
     }
 
+    public int getRtpPort() {
+        return rtpPort;
+    }
+
+    public void setRtpPort(int rtpPort) {
+        this.rtpPort = rtpPort;
+    }
+
     public int getMaxConcurrentSessions() {
         return maxConcurrentSessions;
     }
@@ -84,10 +102,12 @@ public class MrcpServerProperties {
 
     MrcpServerConfig toConfig() {
         return MrcpServerConfig.builder()
+                .advertisedHost(advertisedHost)
                 .sipHost(sipHost)
                 .sipPort(sipPort)
                 .mrcpHost(mrcpHost)
                 .mrcpPort(mrcpPort)
+                .rtpPort(rtpPort)
                 .maxConcurrentSessions(maxConcurrentSessions)
                 .shutdownQuietPeriod(shutdownQuietPeriod)
                 .shutdownTimeout(shutdownTimeout)

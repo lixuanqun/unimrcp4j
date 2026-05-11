@@ -48,10 +48,12 @@ Add `mrcp-spring-boot-starter` to an application and configure:
 mrcp:
   server:
     enabled: true
+    advertised-host: 127.0.0.1
     sip-host: 0.0.0.0
     sip-port: 8060
     mrcp-host: 0.0.0.0
     mrcp-port: 1544
+    rtp-port: 4000
     max-concurrent-sessions: 1000
 ```
 
