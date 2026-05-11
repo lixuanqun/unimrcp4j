@@ -3,6 +3,7 @@ package io.github.javamrcp.server;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 class MrcpServerConfigTest {
@@ -22,5 +23,39 @@ class MrcpServerConfigTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> MrcpServerConfig.builder().sipPort(65_536).build());
+    }
+
+    @Test
+    void appliesBuilderOverrides() {
+        MrcpServerConfig config = MrcpServerConfig.builder()
+                .sipHost("127.0.0.1")
+                .sipPort(0)
+                .mrcpHost("192.0.2.10")
+                .mrcpPort(15440)
+                .maxConcurrentSessions(800)
+                .shutdownQuietPeriod(Duration.ZERO)
+                .shutdownTimeout(Duration.ofSeconds(1))
+                .build();
+
+        assertEquals("127.0.0.1", config.sipHost());
+        assertEquals(0, config.sipPort());
+        assertEquals("192.0.2.10", config.mrcpHost());
+        assertEquals(15440, config.mrcpPort());
+        assertEquals(800, config.maxConcurrentSessions());
+        assertEquals(Duration.ZERO, config.shutdownQuietPeriod());
+        assertEquals(Duration.ofSeconds(1), config.shutdownTimeout());
+    }
+
+    @Test
+    void rejectsInvalidConcurrencyAndShutdownTimeout() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MrcpServerConfig.builder().maxConcurrentSessions(0).build());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MrcpServerConfig.builder().shutdownTimeout(Duration.ZERO).build());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MrcpServerConfig.builder().shutdownQuietPeriod(Duration.ofMillis(-1)).build());
     }
 }
