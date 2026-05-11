@@ -64,3 +64,12 @@ mrcp:
 ```bash
 mvn test
 ```
+
+## Integration assets
+
+- `examples/freeswitch/unimrcp-java-mrcpserver.xml` contains a starting
+  FreeSWITCH `mod_unimrcp` profile.
+- `scripts/sip-options-smoke-test.py` sends a SIP OPTIONS datagram and expects a
+  `200 OK` response.
+- `integration-tests/freeswitch/README.md` describes the current manual
+  FreeSWITCH smoke-test path.
