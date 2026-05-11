@@ -44,7 +44,7 @@ public class MrcpServerAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
-    @ConditionalOnBean(MrcpServer.class)
+    @ConditionalOnBean({MrcpServer.class, MeterRegistry.class})
     @ConditionalOnMissingBean
     MrcpServerMetrics mrcpServerMetrics(MeterRegistry meterRegistry, MrcpServer server) {
         return new MrcpServerMetrics(meterRegistry, server);
