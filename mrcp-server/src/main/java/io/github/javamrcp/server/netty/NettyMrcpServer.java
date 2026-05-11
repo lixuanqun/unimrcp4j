@@ -5,6 +5,8 @@ import io.github.javamrcp.codec.MrcpMessageDecoder;
 import io.github.javamrcp.codec.MrcpMessageEncoder;
 import io.github.javamrcp.server.MrcpServer;
 import io.github.javamrcp.server.MrcpServerConfig;
+import io.github.javamrcp.sip.SipDatagramDecoder;
+import io.github.javamrcp.sip.SipDatagramEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -102,7 +104,15 @@ public final class NettyMrcpServer implements MrcpServer {
                 .group(sipGroup)
                 .channel(NioDatagramChannel.class)
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .handler(new SipDatagramHandler());
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
+                    @Override
+                    protected void initChannel(NioDatagramChannel channel) {
+                        channel.pipeline()
+                                .addLast(new SipDatagramDecoder())
+                                .addLast(new SipDatagramEncoder())
+                                .addLast(new SipDatagramHandler());
+                    }
+                });
 
         ChannelFuture bindFuture = bootstrap.bind(new InetSocketAddress(config.sipHost(), config.sipPort()));
         return bindFuture.syncUninterruptibly().channel();

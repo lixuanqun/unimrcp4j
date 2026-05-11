@@ -1,34 +1,39 @@
 package io.github.javamrcp.server.netty;
 
+import io.github.javamrcp.sip.SipDatagramMessage;
+import io.github.javamrcp.sip.SipMessage;
+import io.github.javamrcp.sip.SipRequestLine;
+import io.github.javamrcp.sip.SipResponseLine;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.DatagramPacket;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * First-step SIP UDP ingress point. Full SIP transaction parsing will be layered here next.
+ * First-step typed SIP UDP ingress point. SIP transactions will be layered here next.
  */
-final class SipDatagramHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+final class SipDatagramHandler extends SimpleChannelInboundHandler<SipDatagramMessage> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SipDatagramHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, DatagramPacket packet) {
-        String firstLine = firstLine(packet);
+    protected void channelRead0(ChannelHandlerContext context, SipDatagramMessage datagram) {
+        SipMessage message = datagram.message();
         LOGGER.debug(
-                "Received SIP datagram from {} with {} bytes: {}",
-                packet.sender(),
-                packet.content().readableBytes(),
-                firstLine);
+                "Received SIP {} from {}: startLine={}, headers={}, bodyLength={}",
+                message.messageType(),
+                datagram.sender(),
+                startLineSummary(message),
+                message.headers().size(),
+                message.body().length);
     }
 
-    private String firstLine(DatagramPacket packet) {
-        String payload = packet.content().toString(StandardCharsets.US_ASCII);
-        int lineEnd = payload.indexOf("\r\n");
-        if (lineEnd < 0) {
-            lineEnd = payload.indexOf('\n');
+    private String startLineSummary(SipMessage message) {
+        if (message.startLine() instanceof SipRequestLine requestLine) {
+            return requestLine.method() + " " + requestLine.requestUri();
         }
-        return lineEnd >= 0 ? payload.substring(0, lineEnd) : payload;
+        if (message.startLine() instanceof SipResponseLine responseLine) {
+            return responseLine.statusCode() + " " + responseLine.reasonPhrase();
+        }
+        return message.startLine().toString();
     }
 }
