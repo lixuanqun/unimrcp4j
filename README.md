@@ -23,7 +23,7 @@ mrcp-rtp                  RTP packet/session primitives and RTP port allocation
 mrcp-spi                  Provider-neutral ASR/TTS streaming interfaces
 providers/mrcp-provider-mock  Mock ASR/TTS providers for local protocol tests
 mrcp-server               Netty-based MRCPv2 server runtime
-mrcp-client               Placeholder for the future MRCPv2 client SDK
+mrcp-client               Client SDK foundation for generating MRCPv2 SIP/SDP offers
 mrcp-spring-boot-starter  Spring Boot auto-configuration for embedded server usage
 ```
 

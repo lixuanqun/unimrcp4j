@@ -12,13 +12,33 @@
 
     <artifactId>mrcp-client</artifactId>
     <name>java-mrcp-client</name>
-    <description>MRCPv2 client SDK placeholder for the next milestone.</description>
+    <description>MRCPv2 client SDK foundations.</description>
 
     <dependencies>
         <dependency>
             <groupId>io.github.javamrcp</groupId>
             <artifactId>mrcp-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.javamrcp</groupId>
+            <artifactId>mrcp-sip</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.javamrcp</groupId>
+            <artifactId>mrcp-sdp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.javamrcp</groupId>
+            <artifactId>mrcp-rtp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
