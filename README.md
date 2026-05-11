@@ -73,3 +73,5 @@ mvn test
   `200 OK` response.
 - `integration-tests/freeswitch/README.md` describes the current manual
   FreeSWITCH smoke-test path.
+- `docker/Dockerfile.example` shows how to package an application embedding the
+  Spring Boot starter.

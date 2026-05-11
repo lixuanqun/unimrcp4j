@@ -1,0 +1,16 @@
+# Example runtime image for an application embedding mrcp-spring-boot-starter.
+# Build your Spring Boot application jar first, then pass it as APP_JAR.
+#
+#   docker build -f docker/Dockerfile.example --build-arg APP_JAR=examples/server-app/target/server-app.jar -t java-mrcp-server .
+
+FROM eclipse-temurin:21-jre
+
+ARG APP_JAR
+WORKDIR /app
+COPY ${APP_JAR} /app/app.jar
+
+EXPOSE 8060/udp
+EXPOSE 1544/tcp
+EXPOSE 4000/udp
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
