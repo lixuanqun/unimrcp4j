@@ -19,6 +19,7 @@ mrcp-core                 MRCP domain model shared by server and client
 mrcp-codec                MRCPv2 parser, generator, and Netty Content-Length framing
 mrcp-sip                  SIP/2.0 parser, generator, and Netty UDP datagram codecs
 mrcp-sdp                  SDP parser/generator for MRCPv2 SIP offer/answer
+mrcp-rtp                  RTP packet/session primitives and RTP port allocation
 mrcp-spi                  Provider-neutral ASR/TTS streaming interfaces
 mrcp-server               Netty-based MRCPv2 server runtime
 mrcp-client               Placeholder for the future MRCPv2 client SDK
