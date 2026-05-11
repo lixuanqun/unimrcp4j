@@ -29,6 +29,7 @@ class MrcpServerAutoConfigurationTest {
                         "mrcp.server.sip-port=0",
                         "mrcp.server.mrcp-host=127.0.0.1",
                         "mrcp.server.mrcp-port=0",
+                        "mrcp.server.rtp-port=0",
                         "mrcp.server.shutdown-quiet-period=0ms",
                         "mrcp.server.shutdown-timeout=2s")
                 .run(context -> {
@@ -69,6 +70,7 @@ class MrcpServerAutoConfigurationTest {
                         "mrcp.server.sip-port=0",
                         "mrcp.server.mrcp-host=127.0.0.1",
                         "mrcp.server.mrcp-port=0",
+                        "mrcp.server.rtp-port=0",
                         "mrcp.server.shutdown-quiet-period=0ms",
                         "mrcp.server.shutdown-timeout=2s")
                 .run(context -> {

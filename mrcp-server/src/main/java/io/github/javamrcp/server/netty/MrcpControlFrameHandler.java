@@ -1,8 +1,10 @@
 package io.github.javamrcp.server.netty;
 
 import io.github.javamrcp.core.MrcpMessage;
+import io.github.javamrcp.server.MrcpControlMessageRouter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +13,11 @@ import org.slf4j.LoggerFactory;
  */
 final class MrcpControlFrameHandler extends SimpleChannelInboundHandler<MrcpMessage> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MrcpControlFrameHandler.class);
+    private final MrcpControlMessageRouter router;
+
+    MrcpControlFrameHandler(MrcpControlMessageRouter router) {
+        this.router = Objects.requireNonNull(router, "router");
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext context) {
@@ -26,6 +33,9 @@ final class MrcpControlFrameHandler extends SimpleChannelInboundHandler<MrcpMess
                 message.startLine(),
                 message.headers().size(),
                 message.body().length);
+        for (MrcpMessage response : router.route(message)) {
+            context.writeAndFlush(response);
+        }
     }
 
     @Override

@@ -3,8 +3,11 @@ package io.github.javamrcp.server.netty;
 import io.github.javamrcp.codec.MrcpFrameDecoder;
 import io.github.javamrcp.codec.MrcpMessageDecoder;
 import io.github.javamrcp.codec.MrcpMessageEncoder;
+import io.github.javamrcp.rtp.RtpDatagramDecoder;
+import io.github.javamrcp.rtp.RtpDatagramEncoder;
 import io.github.javamrcp.server.MrcpServer;
 import io.github.javamrcp.server.MrcpServerConfig;
+import io.github.javamrcp.server.MrcpControlMessageRouter;
 import io.github.javamrcp.server.MrcpSessionRegistry;
 import io.github.javamrcp.sip.SipDatagramDecoder;
 import io.github.javamrcp.sip.SipDatagramEncoder;
@@ -35,17 +38,21 @@ public final class NettyMrcpServer implements MrcpServer {
 
     private final MrcpServerConfig config;
     private final MrcpSessionRegistry sessionRegistry;
+    private final MrcpControlMessageRouter controlMessageRouter;
 
     private EventLoopGroup sipGroup;
+    private EventLoopGroup rtpGroup;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Channel sipChannel;
+    private Channel rtpChannel;
     private Channel mrcpChannel;
     private boolean running;
 
     public NettyMrcpServer(MrcpServerConfig config) {
         this.config = Objects.requireNonNull(config, "config");
         this.sessionRegistry = new MrcpSessionRegistry(config.maxConcurrentSessions());
+        this.controlMessageRouter = new MrcpControlMessageRouter(sessionRegistry);
     }
 
     @Override
@@ -55,19 +62,23 @@ public final class NettyMrcpServer implements MrcpServer {
         }
 
         sipGroup = new NioEventLoopGroup(1);
+        rtpGroup = new NioEventLoopGroup(1);
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
 
         try {
             sipChannel = bindSipChannel();
+            rtpChannel = bindRtpChannel();
             mrcpChannel = bindMrcpChannel();
             running = true;
             LOGGER.info(
-                    "Started Netty MRCP server: SIP UDP {}:{}, MRCP TCP {}:{}",
+                    "Started Netty MRCP server: SIP UDP {}:{}, MRCP TCP {}:{}, RTP UDP {}:{}",
                     config.sipHost(),
                     localPort(sipChannel),
                     config.mrcpHost(),
-                    localPort(mrcpChannel));
+                    localPort(mrcpChannel),
+                    config.advertisedHost(),
+                    localPort(rtpChannel));
             return CompletableFuture.completedFuture(null);
         } catch (RuntimeException ex) {
             stop();
@@ -82,14 +93,18 @@ public final class NettyMrcpServer implements MrcpServer {
         }
 
         closeChannel(sipChannel);
+        closeChannel(rtpChannel);
         closeChannel(mrcpChannel);
         sipChannel = null;
+        rtpChannel = null;
         mrcpChannel = null;
 
         shutdownGroup(sipGroup);
+        shutdownGroup(rtpGroup);
         shutdownGroup(workerGroup);
         shutdownGroup(bossGroup);
         sipGroup = null;
+        rtpGroup = null;
         workerGroup = null;
         bossGroup = null;
         running = false;
@@ -134,11 +149,30 @@ public final class NettyMrcpServer implements MrcpServer {
                                 .addLast(new MrcpFrameDecoder())
                                 .addLast(new MrcpMessageDecoder())
                                 .addLast(new MrcpMessageEncoder())
-                                .addLast(new MrcpControlFrameHandler());
+                                .addLast(new MrcpControlFrameHandler(controlMessageRouter));
                     }
                 });
 
         ChannelFuture bindFuture = bootstrap.bind(new InetSocketAddress(config.mrcpHost(), config.mrcpPort()));
+        return bindFuture.syncUninterruptibly().channel();
+    }
+
+    private Channel bindRtpChannel() {
+        Bootstrap bootstrap = new Bootstrap()
+                .group(rtpGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_REUSEADDR, true)
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
+                    @Override
+                    protected void initChannel(NioDatagramChannel channel) {
+                        channel.pipeline()
+                                .addLast(new RtpDatagramDecoder())
+                                .addLast(new RtpDatagramEncoder())
+                                .addLast(new RtpDatagramHandler());
+                    }
+                });
+
+        ChannelFuture bindFuture = bootstrap.bind(new InetSocketAddress(config.sipHost(), config.rtpPort()));
         return bindFuture.syncUninterruptibly().channel();
     }
 

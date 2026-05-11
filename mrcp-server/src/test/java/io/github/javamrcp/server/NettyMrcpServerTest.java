@@ -41,6 +41,7 @@ class NettyMrcpServerTest {
                 .sipPort(0)
                 .mrcpHost("127.0.0.1")
                 .mrcpPort(0)
+                .rtpPort(0)
                 .shutdownQuietPeriod(Duration.ZERO)
                 .shutdownTimeout(Duration.ofSeconds(2))
                 .build();
