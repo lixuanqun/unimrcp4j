@@ -29,6 +29,8 @@ public final class SdpMediaDescription {
             List<SdpAttribute> attributes) {
         this.mediaType = Objects.requireNonNull(mediaType, "mediaType");
         this.rawMediaType = Objects.requireNonNull(rawMediaType, "rawMediaType");
+        this.port = port;
+        this.portCount = portCount;
         this.protocol = Objects.requireNonNull(protocol, "protocol");
         this.formats = List.copyOf(Objects.requireNonNull(formats, "formats"));
         this.connection = connection;
