@@ -21,6 +21,7 @@ mrcp-sip                  SIP/2.0 parser, generator, and Netty UDP datagram code
 mrcp-sdp                  SDP parser/generator for MRCPv2 SIP offer/answer
 mrcp-rtp                  RTP packet/session primitives and RTP port allocation
 mrcp-spi                  Provider-neutral ASR/TTS streaming interfaces
+providers/mrcp-provider-mock  Mock ASR/TTS providers for local protocol tests
 mrcp-server               Netty-based MRCPv2 server runtime
 mrcp-client               Placeholder for the future MRCPv2 client SDK
 mrcp-spring-boot-starter  Spring Boot auto-configuration for embedded server usage

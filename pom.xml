@@ -28,6 +28,7 @@
         <module>mrcp-sdp</module>
         <module>mrcp-rtp</module>
         <module>mrcp-spi</module>
+        <module>providers/mrcp-provider-mock</module>
         <module>mrcp-server</module>
         <module>mrcp-client</module>
         <module>mrcp-spring-boot-starter</module>
