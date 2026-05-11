@@ -18,6 +18,7 @@ Pure Java MRCPv2 toolkit for building FreeSWITCH-compatible speech servers.
 mrcp-core                 MRCP domain model shared by server and client
 mrcp-codec                MRCPv2 parser, generator, and Netty Content-Length framing
 mrcp-sip                  SIP/2.0 parser, generator, and Netty UDP datagram codecs
+mrcp-sdp                  SDP parser/generator for MRCPv2 SIP offer/answer
 mrcp-spi                  Provider-neutral ASR/TTS streaming interfaces
 mrcp-server               Netty-based MRCPv2 server runtime
 mrcp-client               Placeholder for the future MRCPv2 client SDK
@@ -34,7 +35,7 @@ The current skeleton binds:
 The next protocol milestones are:
 
 1. SIP INVITE/ACK/BYE/CANCEL transaction handling.
-2. SDP offer/answer for FreeSWITCH `mod_unimrcp`.
+2. FreeSWITCH `mod_unimrcp` offer/answer session orchestration.
 3. Resource state machines for `speechrecog` and `speechsynth`.
 4. RTP over UDP with PCMU, PCMA, and L16 audio formats.
 5. Provider orchestration for mock ASR/TTS and real vendor adapters.

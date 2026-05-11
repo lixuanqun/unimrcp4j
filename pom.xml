@@ -25,6 +25,7 @@
         <module>mrcp-core</module>
         <module>mrcp-codec</module>
         <module>mrcp-sip</module>
+        <module>mrcp-sdp</module>
         <module>mrcp-spi</module>
         <module>mrcp-server</module>
         <module>mrcp-client</module>
