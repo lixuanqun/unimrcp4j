@@ -10,24 +10,14 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mrcp-server</artifactId>
-    <name>java-mrcp-server</name>
-    <description>Netty-based MRCPv2 server runtime.</description>
+    <artifactId>mrcp-codec</artifactId>
+    <name>java-mrcp-codec</name>
+    <description>MRCPv2 parser, generator, and Netty framing support.</description>
 
     <dependencies>
         <dependency>
             <groupId>io.github.javamrcp</groupId>
             <artifactId>mrcp-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.javamrcp</groupId>
-            <artifactId>mrcp-codec</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.javamrcp</groupId>
-            <artifactId>mrcp-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -37,14 +27,6 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

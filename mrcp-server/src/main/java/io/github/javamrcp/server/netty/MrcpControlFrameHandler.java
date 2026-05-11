@@ -1,16 +1,15 @@
 package io.github.javamrcp.server.netty;
 
-import io.netty.buffer.ByteBuf;
+import io.github.javamrcp.core.MrcpMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * First-step MRCP TCP ingress point. Content-Length aware framing will replace this stub.
+ * First-step typed MRCP control ingress point. Session routing will be layered here next.
  */
-final class MrcpControlFrameHandler extends SimpleChannelInboundHandler<ByteBuf> {
+final class MrcpControlFrameHandler extends SimpleChannelInboundHandler<MrcpMessage> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MrcpControlFrameHandler.class);
 
     @Override
@@ -19,27 +18,19 @@ final class MrcpControlFrameHandler extends SimpleChannelInboundHandler<ByteBuf>
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, ByteBuf message) {
-        String firstLine = firstLine(message);
+    protected void channelRead0(ChannelHandlerContext context, MrcpMessage message) {
         LOGGER.debug(
-                "Received MRCP control bytes from {} with {} bytes: {}",
+                "Received MRCP {} from {}: startLine={}, headers={}, bodyLength={}",
+                message.messageType(),
                 context.channel().remoteAddress(),
-                message.readableBytes(),
-                firstLine);
+                message.startLine(),
+                message.headers().size(),
+                message.body().length);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         LOGGER.warn("Closing MRCP control channel after transport error", cause);
         context.close();
-    }
-
-    private String firstLine(ByteBuf message) {
-        String payload = message.toString(StandardCharsets.US_ASCII);
-        int lineEnd = payload.indexOf("\r\n");
-        if (lineEnd < 0) {
-            lineEnd = payload.indexOf('\n');
-        }
-        return lineEnd >= 0 ? payload.substring(0, lineEnd) : payload;
     }
 }

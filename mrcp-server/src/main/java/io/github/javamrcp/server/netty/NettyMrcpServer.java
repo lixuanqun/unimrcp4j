@@ -1,5 +1,8 @@
 package io.github.javamrcp.server.netty;
 
+import io.github.javamrcp.codec.MrcpFrameDecoder;
+import io.github.javamrcp.codec.MrcpMessageDecoder;
+import io.github.javamrcp.codec.MrcpMessageEncoder;
 import io.github.javamrcp.server.MrcpServer;
 import io.github.javamrcp.server.MrcpServerConfig;
 import io.netty.bootstrap.Bootstrap;
@@ -114,7 +117,11 @@ public final class NettyMrcpServer implements MrcpServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel channel) {
-                        channel.pipeline().addLast(new MrcpControlFrameHandler());
+                        channel.pipeline()
+                                .addLast(new MrcpFrameDecoder())
+                                .addLast(new MrcpMessageDecoder())
+                                .addLast(new MrcpMessageEncoder())
+                                .addLast(new MrcpControlFrameHandler());
                     }
                 });
 

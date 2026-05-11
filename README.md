@@ -16,6 +16,7 @@ Pure Java MRCPv2 toolkit for building FreeSWITCH-compatible speech servers.
 
 ```text
 mrcp-core                 MRCP domain model shared by server and client
+mrcp-codec                MRCPv2 parser, generator, and Netty Content-Length framing
 mrcp-spi                  Provider-neutral ASR/TTS streaming interfaces
 mrcp-server               Netty-based MRCPv2 server runtime
 mrcp-client               Placeholder for the future MRCPv2 client SDK
@@ -27,15 +28,15 @@ mrcp-spring-boot-starter  Spring Boot auto-configuration for embedded server usa
 The current skeleton binds:
 
 - SIP signaling over UDP, default `0.0.0.0:8060`
-- MRCPv2 control over TCP, default `0.0.0.0:1544`
+- MRCPv2 control over TCP, default `0.0.0.0:1544`, with Content-Length aware framing and typed message decoding
 
 The next protocol milestones are:
 
 1. SIP INVITE/ACK/BYE/CANCEL transaction parsing.
 2. SDP offer/answer for FreeSWITCH `mod_unimrcp`.
-3. MRCP `Content-Length` aware frame decoder and message parser.
+3. Resource state machines for `speechrecog` and `speechsynth`.
 4. RTP over UDP with PCMU, PCMA, and L16 audio formats.
-5. Resource state machines for `speechrecog` and `speechsynth`.
+5. Provider orchestration for mock ASR/TTS and real vendor adapters.
 
 ## Spring Boot usage
 
